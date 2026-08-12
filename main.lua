@@ -1402,9 +1402,8 @@ if E and E.FireServer then
     if not aN then end
 end
 
--- =============================================
 -- RenderStepped Main Loop
--- =============================================
+
 b.RenderStepped:Connect(function()
     pcall(function()
         if G then I = getClosestTarget() end
@@ -1518,9 +1517,8 @@ b.RenderStepped:Connect(function()
     end)
 end)
 
--- =============================================
 -- Event Connections
--- =============================================
+
 r.CharacterAdded:Connect(function(aN)
     s = aN
 end)
@@ -1568,9 +1566,9 @@ b.Heartbeat:Connect(function()
     pcall(CheckAndPickup)
 end)
 
--- =============================================
--- Jump Power BindAction (แบบเดิม)
--- =============================================
+
+-- Jump Power BindAction (v original)
+
 h:BindAction("FlyUp", function(aN, aO, aP)
     if not S then return Enum.ContextActionResult.Pass end
     
@@ -1654,16 +1652,16 @@ end)
 
 StartAutoAttack()
 
--- =============================================
--- ลงทะเบียน Items ทั้งหมด
--- =============================================
+
+-- Registrar todos los elementos
+
 for aN, aO in ipairs({"gun", "melee", "throwable", "consumable", "farming", "misc", "rod", "fish"}) do
     registerItems(c:WaitForChild("Items")[aO])
 end
 
--- =============================================
+
 -- Player Connections
--- =============================================
+
 a.PlayerAdded:Connect(function(aN)
     aN.CharacterAdded:Connect(function()
         if aw then
@@ -1745,9 +1743,7 @@ end)
 
 loadESP()
 
--- =============================================
 -- COMBAT TAB
--- =============================================
 local aN = B:Tab({Title = "COMBAT:", Icon = "crosshair"})
 
 aN:Section({Title = "GUN:"})
@@ -1808,9 +1804,8 @@ pcall(function()
     aN:Divider()
 end)
 
--- =============================================
+
 -- WEAPON TAB
--- =============================================
 local aS = B:Tab({Title = "WEAPON:", Icon = "layers"})
 
 aS:Section({Title = "MODS:"})
@@ -2047,9 +2042,9 @@ local aV = aS:Toggle({
 })
 D:Register("AutoAttack_Enabled", aV)
 
--- =============================================
+
 -- ESP TAB
--- =============================================
+
 local aW = B:Tab({Title = "ESP:", Icon = "eye"})
 
 aW:Section({Title = "Visual:"})
@@ -2156,9 +2151,9 @@ for a1, a2 in pairs(game.Players:GetPlayers()) do
     end
 end
 
--- =============================================
+
 -- CHARACTER TAB
--- =============================================
+
 local a1 = B:Tab({Title = "CHARACTER:", Icon = "user"})
 
 a1:Section({Title = "CHARACTER:"})
@@ -2180,7 +2175,7 @@ D:Register("SpeedMultiplier", a3)
 
 -- ✅ Jump Power (แบบเดิม)
 local a4 = a1:Toggle({
-    Title = "โดดสูง-ใช้งานไม่ได้❌",
+    Title = "Salto de altura – inutilizable ❌",
     Default = false,
     Callback = function(a4)
         S = a4
@@ -2441,9 +2436,8 @@ local be = a1:Slider({
 })
 D:Register("SnapHeight", be)
 
--- =============================================
 -- PLAYER TAB
--- =============================================
+
 local bf = B:Tab({Title = "PLAYER:", Icon = "person-standing"})
 
 bf:Section({Title = "PLAYER:"})
@@ -2472,15 +2466,14 @@ D:Register("AutoFinnish", bi)
 
 bf:Divider()
 
--- =============================================
 -- MISC TAB
--- =============================================
+
 local bk = B:Tab({Title = "MISC:", Icon = "warehouse"})
 
 local bl = game.PlaceId
 local ServerJobId = game.JobId
 
--- ✅ ปุ่มคัดลอก Server ID + Place ID
+-- ✅ Botón para copiar ID del servidor 
 bk:Section({Title = "Server Info"})
 
 bk:Button({
@@ -2565,7 +2558,7 @@ bk:Button({
         end)
         
         if not bq or not br or not br.data then
-            warn("ไม่สามารถดึงข้อมูลเซิร์ฟเวอร์ได้เลยพี่")
+            warn("No se pudieron recuperar los datos del servidor.")
             return
         end
         
@@ -2672,9 +2665,9 @@ D:Register("DeleteConfig", bs)
 
 if bq then bq(D) end
 
--- =============================================
+
 -- Bypass Tweens
--- =============================================
+
 local bt = j.tween
 j.tween = function(bu, bv, bw)
     if bu and bu:IsA("NumberValue") and bw and bw.Value ~= nil then
@@ -2684,9 +2677,9 @@ j.tween = function(bu, bv, bw)
     return bt(bu, bv, bw)
 end
 
--- =============================================
+
 -- Bypass Sell Button
--- =============================================
+
 local bu, bv = pcall(function()
     return k.get("SellPromptSellButton")
 end)
@@ -2706,9 +2699,9 @@ end
 task.wait(2)
 print("🫐 Juix Hub Loaded!")
 
--- =============================================
+
 -- Lock Tool
--- =============================================
+
 local function lockTool(bw)
     if bw and bw:IsA("Tool") then
         pcall(function()
@@ -2744,11 +2737,11 @@ r.CharacterAdded:Connect(function()
 end)
 
 task.wait(1)
-print("🫐 Juix Hub Ready!")
+print("chriss hub Ready!")
 
--- =============================================
+
 -- Hook Emote Buttons
--- =============================================
+
 local function hookButton(bw)
     if not bw then return end
     if bw:FindFirstChild("UnlocksAtText") then bw.UnlocksAtText.Visible = false end
@@ -2791,9 +2784,9 @@ end)
 
 task.wait(2)
 
--- =============================================
+
 -- Item ESP (Dropped Items)
--- =============================================
+
 local bw
 repeat task.wait() until workspace.CurrentCamera
 bw = workspace.CurrentCamera
@@ -2949,9 +2942,9 @@ a.PlayerRemoving:Connect(function(bx)
     end
 end)
 
--- =============================================
+
 -- BUY TAB
--- =============================================
+
 local BuyTab = Window:Tab({Title = "Buy", Icon = "house"})
 
 BuyTab:Section({Title = "Buy"})
@@ -2998,9 +2991,9 @@ BuyTab:Toggle({
     end
 })
 
--- =============================================
+
 -- VEHICLE TAB
--- =============================================
+
 local VehicleTab = Window:Tab({Title = "Vehicle", Icon = "car"})
 
 VehicleTab:Section({Title = "Vehicle"})
@@ -3033,7 +3026,7 @@ VehicleTab:Button({
         end
         
         Window:Notify({
-            Title = "Juix Hub",
+            Title = "chriss hub",
             Desc = "Done!",
             Time = 3
         })
