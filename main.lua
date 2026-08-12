@@ -38,10 +38,10 @@ end)
 local B
 if A then
     B = A:CreateWindow({
-        Title = "🫐 Juix Hub",
+        Title = "CHRISS HUB",
         Icon = "",
-        Author = "By Jui",
-        Folder = "JuixHub",
+        Author = "By chriss",
+        Folder = "chriss mod",
         Size = UDim2.fromOffset(650, 400),
         Theme = "Dark",
         Transparent = true,
@@ -64,7 +64,7 @@ if A then
     })
 
     Window:Tag({
-        Title = "Juix Hub | Premium",
+        Title = "FLOURITE| PREMIUM",
         Icon = "",
         Color = Color3.fromHex("#FFD700"),
         Radius = 13,
@@ -172,9 +172,8 @@ pcall(function()
     end
 end)
 
--- =============================================
--- ฟังก์ชัน Get Ping
--- =============================================
+--  Get Ping
+
 local function getPing()
     local aD = r:FindFirstChild("PlayerGui")
     if not aD then return 0.2 end
@@ -197,9 +196,8 @@ local function getPing()
     return aI
 end
 
--- =============================================
--- ฟังก์ชันเช็คผู้เล่นที่ยกเว้น (เพื่อน)
--- =============================================
+-- Función para comprobar si hay jugadores exentos (amigos)
+
 local function isPlayerExcluded(aD)
     for aE, aF in ipairs(P) do
         if aF ~= "" and string.find(string.lower(aD), string.lower(aF)) then
@@ -209,9 +207,10 @@ local function isPlayerExcluded(aD)
     return false
 end
 
--- =============================================
--- ฟังก์ชันหาเป้าหมายที่ใกล้ที่สุดใน FOV
--- =============================================
+
+
+-- Función para encontrar el objetivo más cercano dentro del campo de visión (FOV)
+
 local function getClosestTarget()
     local aD
     local aE = H
@@ -242,9 +241,8 @@ local function getClosestTarget()
     return aD
 end
 
--- =============================================
--- ฟังก์ชันทำนายตำแหน่งเป้า
--- =============================================
+-- Función de predicción de la posición del objetivo
+
 local function predictPosition(aD, aE)
     if not aD then return Vector3.zero end
     
@@ -255,16 +253,16 @@ local function predictPosition(aD, aE)
     return aD.Position + (aG * aF * 1)
 end
 
--- =============================================
--- ✅ ฟังก์ชันเช็คกำแพง (แก้ไข: คืนค่า false เสมอ = ยิงทะลุกำแพง)
--- =============================================
+
+
+-- ✅ Función de comprobación de muros (Modificada: siempre devuelve falso = disparar a través de muros)
+
 local function isBehindWall(aD, aE)
     return false
 end
 
--- =============================================
--- ตั้งค่าตัวละคร
--- =============================================
+-- Configuración del personaje
+
 local function setupCharacter(aD)
     s = aD
     t = aD:WaitForChild("Humanoid")
@@ -285,9 +283,9 @@ local function setupCharacter(aD)
     end)
 end
 
--- =============================================
--- ฟังก์ชันเช็คสถานะล้ม/ตาย
--- =============================================
+
+-- Función para comprobar el estado de caída o muerte
+
 local function isDowned()
     local aD = o.get_hum()
     if not aD then return false end
@@ -295,18 +293,18 @@ local function isDowned()
     return aD:GetAttribute("HasBeenDowned") or aD:GetAttribute("IsDead")
 end
 
--- =============================================
--- ฟังก์ชันดึง HumanoidRootPart
--- =============================================
+
+-- Función para obtener HumanoidRootPart
+
 local function getHRP()
     local aD = o.current_char.get()
     if not aD then return end
     return aD:FindFirstChild("HumanoidRootPart")
 end
 
--- =============================================
--- เทเลพอร์ตใต้แผนที่
--- =============================================
+
+-- Teletransportarse bajo el mapa
+
 local function teleportUnderground()
     local aD = getHRP()
     if not aD then return end
@@ -315,9 +313,8 @@ local function teleportUnderground()
     aD.CFrame = ah
 end
 
--- =============================================
--- ขยับหลบใต้ดิน
--- =============================================
+
+-- Desplazándose bajo tierra para ponerse a cubierto
 local function flickerAndMove()
     if ag then return end
     ag = true
@@ -343,9 +340,7 @@ local function flickerAndMove()
     end)
 end
 
--- =============================================
 -- NetGet Function
--- =============================================
 local function NetGet(...)
     if not aC or not aC.func then return end
     
@@ -381,9 +376,8 @@ local function NetGet(...)
     return aF
 end
 
--- =============================================
--- ฟังก์ชันเก็บไอเทม
--- =============================================
+-- Función de recolección de objetos
+
 local function CheckAndPickup()
     if not ak then return end
     
@@ -415,9 +409,8 @@ local function CheckAndPickup()
     end
 end
 
--- =============================================
 -- SafeCall Function
--- =============================================
+
 local function SafeCall(aD, ...)
     local aE, aF = pcall(aD, ...)
     return aE, aF
@@ -425,9 +418,8 @@ end
 
 local aD = table.unpack or unpack
 
--- =============================================
 -- CallRemote Function
--- =============================================
+
 local function CallRemote(aE, ...)
     if not aE then return end
     
@@ -468,9 +460,9 @@ local function CallRemote(aE, ...)
     end
 end
 
--- =============================================
--- ดึงผู้เล่นในระยะ
--- =============================================
+
+-- Dibujar a los jugadores que estén dentro del alcance.
+
 local function getPlayersInRange(aE)
     local aF = {}
     local aG = r.Character
@@ -492,9 +484,8 @@ local function getPlayersInRange(aE)
     return aF
 end
 
--- =============================================
--- ดึง Tool ที่ถืออยู่
--- =============================================
+-- Saca la herramienta que tienes en la mano.
+
 local function getActiveTool()
     local aE = r and r.Character
     if aE then
@@ -517,9 +508,9 @@ local function getActiveTool()
     return nil
 end
 
--- =============================================
--- เช็คว่าเป็น Tool ระยะประชิด
--- =============================================
+
+-- Comprobar si es un arma cuerpo a cuerpo.
+
 local function isMeleeTool(aE)
     if not aE then return false end
     if aE.Name == "Fists" then return true end
@@ -535,9 +526,8 @@ local function isMeleeTool(aE)
     return false
 end
 
--- =============================================
--- โจมตีเป้าหมายใกล้เคียง (Auto Attack)
--- =============================================
+
+-- -- Ataca objetivos cercanos (Ataque automático)
 local function AttackNearby()
     if not E then return end
     
@@ -588,9 +578,7 @@ end
 
 local aE = false
 
--- =============================================
 -- เริ่ม Auto Attack
--- =============================================
 local function StartAutoAttack()
     if aE then return end
     aE = true
