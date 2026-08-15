@@ -838,3 +838,167 @@ RunService.RenderStepped:Connect(function()
         end
     end
 end)
+
+
+-- =============================================
+-- 🛠️ JUIX HUB - PARTE 7: UTILIDADES, MISCELÁNEOS Y VEHÍCULOS (EL GRAN FINAL)
+-- =============================================
+
+local TeleportService = game:GetService("TeleportService")
+local HttpService = game:GetService("HttpService")
+local PlaceIDDelJuego = game.PlaceId
+local IDDelServidorActual = game.JobId
+
+-- =============================================
+-- 🏃‍♂️ ENERGÍA INFINITA (AUTO SPRINT BYPASS)
+-- =============================================
+-- El juego usa un módulo local para gastar tu energía. Aquí lo interceptamos.
+local function ActivarStaminaInfinita(Activar)
+    local Exito, ModuloSprint = pcall(function()
+        return require(ReplicatedStorage.Modules.Game.Sprint)
+    end)
+    
+    if Exito and ModuloSprint then
+        local FuncionConsumir = ModuloSprint.consume_stamina
+        local BarraSprint = debug.getupvalue(FuncionConsumir, 2).sprint_bar
+        
+        if BarraSprint then
+            if Activar then
+                -- Guardamos la función original para no romper el juego
+                ObtenerEntorno().ActualizacionSprintOriginal = BarraSprint.update
+                -- Remplazamos la función para que siempre devuelva "1" (100% de energía)
+                BarraSprint.update = function(...)
+                    return ObtenerEntorno().ActualizacionSprintOriginal(function() return 1 end)
+                end
+                print("¡Energía infinita activada!")
+            else
+                -- Restauramos la energía normal
+                if ObtenerEntorno().ActualizacionSprintOriginal then
+                    BarraSprint.update = ObtenerEntorno().ActualizacionSprintOriginal
+                    ObtenerEntorno().ActualizacionSprintOriginal = nil
+                end
+            end
+        end
+    end
+end
+
+-- =============================================
+-- 💰 BYPASS DEL BOTÓN DE VENTA (VENTA INSTANTÁNEA)
+-- =============================================
+-- Elimina ese molesto tiempo de espera de "Mantén presionado para vender"
+local function QuitarEsperaDeVenta()
+    local Exito, BotonVender = pcall(function()
+        return BuyPromptUI.get("SellPromptSellButton")
+    end)
+
+    if Exito and BotonVender then
+        -- Desactiva la animación circular de espera
+        local CirculoEspera = BotonVender:FindFirstChild("HoldStroke", true)
+        if CirculoEspera then
+            CirculoEspera.Enabled = false
+            local Gradiente = CirculoEspera:FindFirstChildOfClass("UIGradient")
+            if Gradiente then Gradiente.Enabled = false end
+        end
+        -- Fuerza todos los valores de tiempo internos a 1 milisegundo
+        for _, Elemento in pairs(BotonVender:GetDescendants()) do
+            if Elemento:IsA("NumberValue") then Elemento.Value = 1 end
+        end
+    end
+end
+QuitarEsperaDeVenta() -- Se ejecuta automáticamente al cargar el script
+
+-- =============================================
+-- 📜 RECLAMAR TODAS LAS MISIONES DE GOLPE
+-- =============================================
+local function ReclamarMisiones()
+    task.spawn(function()
+        local GUI_Misiones = LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("Quests"):WaitForChild("QuestsHolder"):WaitForChild("QuestsScrollingFrame")
+        
+        -- Buscamos el contador oculto de eventos (Anti-Cheat Bypass)
+        local ContadorRed = nil
+        for _, FuncionEnMemoria in ipairs(getgc and getgc(true) or {}) do
+            if typeof(FuncionEnMemoria) == "table" and rawget(FuncionEnMemoria, "event") and rawget(FuncionEnMemoria, "func") then
+                ContadorRed = FuncionEnMemoria
+                break
+            end
+        end
+        
+        if not ContadorRed then return end
+        
+        -- Leemos todas las misiones en tu pantalla y le decimos al servidor que ya las reclamaste
+        for _, Mision in ipairs(GUI_Misiones:GetChildren()) do
+            if Mision:IsA("Frame") or Mision:IsA("TextButton") or Mision:IsA("ImageButton") then
+                ContadorRed.func = ContadorRed.func + 1
+                ReplicatedStorage.Remotes.Get:InvokeServer(ContadorRed.func, "claim_quest", Mision.Name)
+                task.wait(0.2) -- Pequeña pausa para no saturar el servidor (y no ser baneado)
+            end
+        end
+        print("¡Todas las misiones reclamadas!")
+    end)
+end
+
+-- =============================================
+-- 🌍 SERVER HOP (BUSCAR SERVIDOR VACÍO)
+-- =============================================
+local function BuscarServidorVacio()
+    local ID_JuegoBase = 104715542330896 -- ID específico que usó el autor
+    
+    -- Le preguntamos a la API de Roblox por los servidores
+    local Exito, Respuesta = pcall(function()
+        return HttpService:JSONDecode(
+            game:HttpGet("https://games.roblox.com/v1/games/" .. ID_JuegoBase .. "/servers/Public?sortOrder=Desc&limit=100")
+        )
+    end)
+    
+    if not Exito or not Respuesta or not Respuesta.data then return end
+    
+    local ServidoresValidos = {}
+    for _, Servidor in ipairs(Respuesta.data) do
+        -- Si hay espacio y no es el servidor donde ya estamos...
+        if Servidor.playing < Servidor.maxPlayers and Servidor.id ~= IDDelServidorActual then
+            table.insert(ServidoresValidos, Servidor)
+        end
+    end
+    
+    if #ServidoresValidos > 0 then
+        -- Ordenamos para ir al que tenga más gente, pero que aún tenga espacio
+        table.sort(ServidoresValidos, function(a, b) return a.playing > b.playing end)
+        local MejorServidor = ServidoresValidos[1]
+        
+        TeleportService:TeleportToPlaceInstance(ID_JuegoBase, MejorServidor.id, LocalPlayer)
+    end
+end
+
+-- =============================================
+-- 🚗 TRAER VEHÍCULO HACIA TI (PULL CAR OWNER)
+-- =============================================
+local function TraerMiVehiculo()
+    local MiRaiz = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+    local CarpetaVehiculos = Workspace:WaitForChild("Vehicles")
+    
+    if not MiRaiz then return end
+    
+    for _, Vehiculo in pairs(CarpetaVehiculos:GetChildren()) do
+        if Vehiculo:IsA("Model") then
+            -- El juego le pone un atributo "OwnerUserId" a los autos. ¡Revisamos si es el tuyo!
+            local DuenoID = Vehiculo:GetAttribute("OwnerUserId")
+            
+            if DuenoID and DuenoID == LocalPlayer.UserId then
+                -- Calculamos una posición justo frente a ti, un poquito arriba para que no se atore en el piso
+                local OffsetPosicion = CFrame.new(math.random(-5, 5), 3, math.random(-15, -5))
+                
+                if Vehiculo.PrimaryPart then
+                    Vehiculo:SetPrimaryPartCFrame(MiRaiz.CFrame * OffsetPosicion)
+                else
+                    -- Fallback por si el auto no tiene PrimaryPart
+                    local CualquierParte = Vehiculo:FindFirstChildWhichIsA("BasePart")
+                    if CualquierParte then
+                        CualquierParte.CFrame = MiRaiz.CFrame * OffsetPosicion
+                    end
+                end
+            end
+        end
+    end
+end
+
+print("🫐 Juix Hub Totalmente Cargado y Desofuscado!")
