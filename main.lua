@@ -593,16 +593,12 @@ local function StartAutoAttack()
     end)
 end
 
--- =============================================
 -- สร้างเอฟเฟค Neon
--- =============================================
 local function createNeonEffectAtPosition(aF, aG)
     -- ฟังก์ชันว่าง
 end
 
--- =============================================
 -- เทเลพอร์ต (Snap)
--- =============================================
 local function performTeleport()
     if not u then return end
     
@@ -622,9 +618,7 @@ local function performTeleport()
     createNeonEffectAtPosition(aG, 2)
 end
 
--- =============================================
 -- สลับเปิด/ปิด Teleport
--- =============================================
 local function toggleTeleport()
     if not W then return end
     V = not V
@@ -637,9 +631,7 @@ end
 
 local aF
 
--- =============================================
 -- ล็อคตำแหน่ง Y
--- =============================================
 local function lockYPosition()
     if aF then
         pcall(function()
@@ -657,9 +649,7 @@ local function lockYPosition()
     end)
 end
 
--- =============================================
 -- ลงทะเบียน Items
--- =============================================
 local function registerItems(aG)
     for aH, aI in ipairs(aG:GetChildren()) do
         if aI:IsA("Tool") then
@@ -701,9 +691,8 @@ local function registerItems(aG)
     end
 end
 
--- =============================================
 -- ดึง Key ของ Item
--- =============================================
+
 local function getItemKey(aG)
     local aH = aG:FindFirstChild("Handle")
     local aI = aG:GetAttribute("DisplayName") or aG.Name
@@ -726,18 +715,15 @@ local function getItemKey(aG)
     return "NAME_" .. aI .. "_" .. aG.Name .. "_RARITY_" .. aK
 end
 
--- =============================================
 -- ดึงข้อมูลอาวุธ
--- =============================================
+
 local function getWeaponInfo(aG)
     if not aG or not aG:IsA("Tool") then return nil end
     local aH = getItemKey(aG)
     return au[aH]
 end
 
--- =============================================
 -- สร้าง Billboard สำหรับผู้เล่น
--- =============================================
 local function createBillboardForPlayer(aG)
     if not aw or aG == r then return end
     
@@ -806,9 +792,9 @@ local function createBillboardForPlayer(aG)
     av[aG] = aJ
 end
 
--- =============================================
+
 -- ตั้งค่า Finish Prompt
--- =============================================
+
 local function setFinishPrompt(aG)
     if aG and aG:IsA("ProximityPrompt") then
         aG.HoldDuration = ae
@@ -816,9 +802,10 @@ local function setFinishPrompt(aG)
     end
 end
 
--- =============================================
+
 -- กด Finish Prompt อัตโนมัติ
--- =============================================
+
+
 local function tryHoldPrompt(aG, aH)
     if not aG or aG:GetAttribute("__AutoFinishBusy") then return end
     
@@ -845,10 +832,7 @@ local function tryHoldPrompt(aG, aH)
     
     aG:SetAttribute("__AutoFinishBusy", nil)
 end
-
--- =============================================
 -- ค้นหา Finish Prompts
--- =============================================
 local function findFinishPrompts()
     local aG = {}
     
@@ -869,9 +853,7 @@ local function findFinishPrompts()
     return aG
 end
 
--- =============================================
 -- Apply to All Players
--- =============================================
 local function applyToAll()
     for aG, aH in ipairs(a:GetPlayers()) do
         if aH ~= r and aH.Character then
@@ -886,9 +868,7 @@ local function applyToAll()
     end
 end
 
--- =============================================
 -- ตั้งค่า Fast Finish สำหรับผู้เล่น
--- =============================================
 local function setupFastFinishForPlayer(aG)
     if aG ~= r then
         aG.CharacterAdded:Connect(function(aH)
@@ -926,9 +906,7 @@ local function setupFastFinishForPlayer(aG)
     end
 end
 
--- =============================================
 -- ข้าม Animation เปิดกล่อง
--- =============================================
 local function TrySkipCrate()
     local aG, aH = pcall(function()
         return require(c.Modules.Game.CrateSystem.Crate)
@@ -955,9 +933,7 @@ local function TrySkipCrate()
     end)
 end
 
--- =============================================
 -- ตั้งค่า Auto Skip Crate
--- =============================================
 local function SetupAutoSkip()
     local aG = c:WaitForChild("Remotes", 5)
     if not aG then return end
@@ -972,9 +948,7 @@ local function SetupAutoSkip()
     end)
 end
 
--- =============================================
 -- สร้าง ESP สำหรับผู้เล่น
--- =============================================
 local function createESP(aG)
     if L[aG] then return end
     
@@ -1077,9 +1051,7 @@ local function createESP(aG)
     L[aG] = {conn = aM, drawings = aL}
 end
 
--- =============================================
 -- โหลด ESP
--- =============================================
 local function loadESP()
     for aG, aH in pairs(a:GetPlayers()) do
         if aH ~= r and not L[aH] then
@@ -1120,9 +1092,8 @@ local function loadESP()
     end)
 end
 
--- =============================================
 -- สร้าง FOV Circle
--- =============================================
+
 if not z then
     J = Drawing.new("Circle")
     J.Color = Color3.fromRGB(255, 255, 255)
@@ -1156,9 +1127,8 @@ else
     J.Parent = aG
 end
 
--- =============================================
 -- ตัวแปร Velocity Tracking
--- =============================================
+
 local aG = 6
 local aH = 1.2
 local aI = 150
@@ -1191,9 +1161,7 @@ a.PlayerRemoving:Connect(function(aM)
     aK[aM] = nil
 end)
 
--- =============================================
 -- คำนวณความเร็ว
--- =============================================
 local function calculateVelocity(aM)
     local aN = aK[aM]
     if not aN or #aN < 2 then return Vector3.new() end
@@ -1219,9 +1187,9 @@ local function calculateVelocity(aM)
     return aQ
 end
 
--- =============================================
+
 -- ทำนายตำแหน่ง (Velocity)
--- =============================================
+
 local function predictPosition(aM, aN)
     if not aM then return Vector3.zero end
     
@@ -1237,9 +1205,7 @@ local function predictPosition(aM, aN)
     return aM.Position + (aQ * aR * aH)
 end
 
--- =============================================
 -- เช็คว่าเป็น Shotgun
--- =============================================
 local function isShotgun()
     if not s then return false end
     
@@ -1255,9 +1221,7 @@ local function isShotgun()
     return false
 end
 
--- =============================================
 -- ✅ SILENT AIM HOOK (แก้ไข: ไม่เช็คกำแพง)
--- =============================================
 local aM
 if E and E.FireServer then
     local aN = pcall(function()
